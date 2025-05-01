@@ -1,0 +1,27 @@
+-- Crear la base de datos
+CREATE DATABASE ProductCatalogDB;
+GO
+
+-- Usar la base de datos
+USE ProductCatalogDB;
+GO
+
+-- Crear la tabla Products
+CREATE TABLE Products (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500),
+    Price DECIMAL(18,2) NOT NULL,
+    Stock INT NOT NULL
+);
+GO
+
+-- Insertar datos iniciales
+INSERT INTO Products (Name, Description, Price, Stock)
+VALUES 
+    ('Laptop', 'Laptop de última generación', 1200.99, 15),
+    ('Smartphone', 'Teléfono inteligente con cámara de 48MP', 699.50, 30),
+    ('Tablet', 'Tablet de 10 pulgadas con stylus', 349.99, 20),
+    ('Auriculares', 'Auriculares inalámbricos con cancelación de ruido', 199.99, 45),
+    ('Smartwatch', 'Reloj inteligente con monitor de frecuencia cardíaca', 249.99, 25);
+GO
