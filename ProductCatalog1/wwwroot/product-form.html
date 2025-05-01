@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="formTitle">Nuevo Producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 id="formHeader" class="mb-0"><i class="bi bi-box-seam"></i> <span id="formTitleText">Nuevo Producto</span></h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="productForm" novalidate>
+                            <input type="hidden" id="productId">
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nombre *</label>
+                                <input type="text" class="form-control" id="name" required>
+                                <div class="invalid-feedback">Por favor ingresa un nombre válido.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="description" rows="3"></textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">Precio *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="price" min="0.01" step="0.01" required>
+                                    </div>
+                                    <div class="invalid-feedback">Por favor ingresa un precio válido.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="stock" class="form-label">Stock *</label>
+                                    <input type="number" class="form-control" id="stock" min="0" required>
+                                    <div class="invalid-feedback">Por favor ingresa una cantidad válida.</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary cancel-btn">
+                                    <i class="bi bi-arrow-left"></i> Volver
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configurar el formulario
+            const form = document.getElementById('productForm');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    if (!form.checkValidity()) {
+                        e.stopPropagation();
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    handleFormSubmit(e).catch(error => {
+                        console.error('Error no manejado:', error);
+                    });
+                });
+            }
+
+            // Configurar botón cancelar/volver
+            const cancelBtn = document.querySelector('.cancel-btn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Cargar datos si es edición
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (productId) {
+                document.getElementById('formTitle').textContent = 'Editar Producto';
+                document.getElementById('formTitleText').textContent = 'Editar Producto';
+
+                // Cargar datos del producto
+                getProductById(productId)
+                    .then(product => {
+                        document.getElementById('productId').value = product.id;
+                        document.getElementById('name').value = product.name;
+                        document.getElementById('description').value = product.description || '';
+                        document.getElementById('price').value = product.price;
+                        document.getElementById('stock').value = product.stock;
+                    })
+                    .catch(error => {
+                        console.error('Error cargando producto:', error);
+                        showNotification('Error al cargar producto para edición', 'danger');
+                        setTimeout(() => window.location.href = 'index.html', 2000);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>
